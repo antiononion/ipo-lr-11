@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hacker News - Dark Theme</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+        }
+        
+        body {
+            background: #0f0f23;
+            color: #cccccc;
+            min-height: 100vh;
+            padding: 30px 20px;
+            background-image: 
+                radial-gradient(circle at 15% 50%, rgba(41, 196, 255, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 85% 30%, rgba(255, 65, 108, 0.05) 0%, transparent 20%);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(20, 20, 35, 0.8);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+        
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 4px;
+            background: linear-gradient(90deg, #00d4ff, #ff416c);
+            border-radius: 2px;
+        }
+        
+        h1 {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff416c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+            letter-spacing: -1px;
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            color: #8888aa;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 25px;
+            margin: 40px 0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 0 20px;
+            position: relative;
+        }
+        
+        .stat-card:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 20%;
+            height: 60%;
+            width: 1px;
+            background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        }
+        
+        .stat-number {
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff416c 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            font-feature-settings: "tnum";
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #8888aa;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 500;
+        }
+        
+        .news-grid {
+            display: grid;
+            gap: 16px;
+            margin: 40px 0;
+        }
+        
+        .news-card {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .news-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        .news-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, #00d4ff, #ff416c);
+            border-radius: 4px 0 0 4px;
+        }
+        
+        .news-number {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            font-size: 32px;
+            font-weight: 800;
+            opacity: 0.1;
+            font-feature-settings: "tnum";
+        }
+        
+        .news-title {
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 1.5;
+            margin-bottom: 20px;
+            color: #ffffff;
+        }
+        
+        .news-title a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .news-title a:hover {
+            color: #00d4ff;
+            text-decoration: none;
+        }
+        
+        .news-meta {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #8888aa;
+        }
+        
+        .meta-item i {
+            font-style: normal;
+            font-size: 18px;
+        }
+        
+        .badge {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .comments-badge {
+            background: rgba(0, 212, 255, 0.1);
+            color: #00d4ff;
+            border: 1px solid rgba(0, 212, 255, 0.2);
+        }
+        
+        .score-badge {
+            background: rgba(255, 65, 108, 0.1);
+            color: #ff416c;
+            border: 1px solid rgba(255, 65, 108, 0.2);
+        }
+        
+        .author-badge {
+            background: rgba(255, 255, 255, 0.05);
+            color: #cccccc;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .source-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 32px;
+            background: linear-gradient(135deg, #00d4ff 0%, #ff416c 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            border: none;
+            margin-top: 30px;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+        
+        .source-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.4);
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #666688;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 36px;
+            }
+            
+            .stats-bar {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .stat-card:not(:last-child)::after {
+                display: none;
+            }
+            
+            .news-card {
+                padding: 20px;
+            }
+            
+            .news-number {
+                font-size: 24px;
+                top: 20px;
+                right: 20px;
+            }
+            
+            .news-meta {
+                gap: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>HACKER NEWS</h1>
+            <div class="subtitle">Real-time tech stories & community insights</div>
+        </div>
+        
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-number">30</div>
+                <div class="stat-label">STORIES</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2,571</div>
+                <div class="stat-label">COMMENTS</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">1,932</div>
+                <div class="stat-label">HIGHEST SCORE</div>
+            </div>
+        </div>
+        
+        <div class="news-grid">
+            
+            <div class="news-card">
+                <div class="news-number">01</div>
+                <div class="news-title">
+                    <a href="https://garagehq.deuxfleurs.fr/" target="_blank">
+                        Garage – An S3 object store so reliable you can run it outside datacenters
+                    </a>
+                </div>
+                <div class="news-meta">
+                    <span class="badge author-badge">👤 ibobev</span>
+                    <span class="badge score-badge">▲ 243</span>
+                    <span class="badge comments-badge">💬 37 comments</span>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="news-number">02</div>
+                <div class="news-title">
+                    <a href="https://www.evilsocket.net/2025/12/18/TP-Link-Tapo-C200-Hardcoded-Keys-Buffer-Overflows-and-Privacy-in-the-Era-of-AI-Assisted-Reverse-Engineering/" target="_blank">
+                        TP-Link Tapo C200: Hardcoded Keys, Buffer Overflows and Privacy
+                    </a>
+                </div>
+                <div class="news-meta">
+                    <span class="badge author-badge">👤 sibellavia</span>
+                    <span class="badge score-badge">▲ 45</span>
+                    <span class="badge comments-badge">💬 0 comments</span>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="news-number">03</div>
+                <div class="news-title">
+                    <a href="https://alexschapiro.com/security/vulnerability/2025/11/20/avelo-airline-reservation-api-vulnerability" target="_blank">
+                        Reverse Engineering Major US Airline's PNR System and Accessing All Reservations
+                    </a>
+                </div>
+                <div class="news-meta">
+                    <span class="badge author-badge">👤 bearsyankees</span>
+                    <span class="badge score-badge">▲ 24</span>
+                    <span class="badge comments-badge">💬 6 comments</span>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="news-number">04</div>
+                <div class="news-title">
+                    <a href="https://mullvad.net/en/blog/announcing-gotatun-the-future-of-wireguard-at-mullvad-vpn" target="_blank">
+                        GotaTun -- Mullvad's WireGuard Implementation in Rust
+                    </a>
+                </div>
+                <div class="news-meta">
+                    <span class="badge author-badge">👤 km</span>
+                    <span class="badge score-badge">▲ 422</span>
+                    <span class="badge comments-badge">💬 97 comments</span>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="news-number">05</div>
+                <div class="news-title">
+                    <a href="https://www.kdpcommunity.com/s/article/New-eBook-Download-Options-for-Readers-Coming-in-2026?language=en_US" target="_blank">
+                        Amazon will allow ePub and PDF downloads for DRM-free eBooks
+                    </a>
+                </div>
+                <div class="news-meta">
+                    <span class="badge author-badge">👤 captn3m0</span>
+                    <span class="badge score-badge">▲ 387</span>
+                    <span class="badge comments-badge">💬 210 comments</span>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="news-number">06</div>
+                <div class="news-title">
+                    <a href="https://graphite.com/blog/graphite-joins-cursor" target="_blank">
+                        Cursor Acquires Graphite
+                    </a>
+                </div>
+                <div class="news-meta">
+                    <span class="badge author-badge">👤 timvdalen</span>
+                    <span class="badge score-badge">▲ 154</span>
+                    <span class="badge comments-badge">💬 93 comments</span>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="news-number">07</div>
+                <div class="news-title">
+                    <a href="https://github.com/FreeBSDFoundation/proj-laptop" target="_blank">
+                        The FreeBSD Foundation's Laptop Support and Usability Project
+                    </a>
+                </div>
+                <div class="news-meta">
+                    <span class="badge author-badge">👤 mikece</span>
+                    <span class="badge score-badge">▲ 92</span>
+                    <span class="badge comments-badge">💬 33 comments</span>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="news-number">08</div>
+                <div class="news-title">
+                    <a href="https://robertgreiner.com/believe-the-checkbook/" target="_blank">
+                        Believe the Checkbook
+                    </a>
+                </div>
+                <div class="news-meta">
+                    <span class="badge author-badge">👤 rg81</span>
+                    <span class="badge score-badge">▲ 54</span>
+                    <span class="badge comments-badge">💬 21 comments</span>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="news-number">09</div>
+                <div class="news-title">
+                    <a href="https://fi-le.net/chomsky/" target="_blank">
+                        Where Is GPT in the Chomsky Hierarchy?
+                    </a>
+                </div>
+                <div class="news-meta">
+                    <span class="badge author-badge">👤 fi-le</span>
+                    <span class="badge score-badge">▲ 19</span>
+                    <span class="badge comments-badge">💬 9 comments</span>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="news-number">10</div>
+                <div class="news-title">
+                    <a href="https://ploum.net/2025-12-19-prepare-for-that-world.html" target="_blank">
+                        Prepare for That Stupid World
+                    </a>
+                </div>
+                <div class="news-meta">
+                    <span class="badge author-badge">👤 speckx</span>
+                    <span class="badge score-badge">▲ 84</span>
+                    <span class="badge comments-badge">💬 46 comments</span>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="news-number">11</div>
+                <div class="news-title">
+                    <a href="https://demoscope.app" target="_blank">
+                        Show HN: I Made Loom for Mobile
+                    </a>
+                </div>
+                <div class="news-meta">
+                    <span class="badge author-badge">👤 admtal</span>
+                    <span class="badge score-badge">▲ 27</span>
+                    <span class="badge comments-badge">💬 23 comments</span>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="news-number">12</div>
+                <div class="news-title">
+                    <a href="https://cursor.com/blog/graphite" target="_blank">
+                        Graphite Is Joining Cursor
+                    </a>
+                </div>
+                <div class="news-meta">
+                    <span class="badge author-badge">👤 fosterfriends</span>
+                    <span class="badge score-badge">▲ 66</span>
+                    <span class="badge comments-badge">💬 23 comments</span>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="news-number">13</div>
+                <div class="news-title">
+                    <a href="https://github.com/envirobly/stepped" target="_blank">
+                        Show HN: Stepped Actions – distributed workflow orchestration for Rails
+                    </a>
+                </div>
+                <div class="news-meta">
+                    <span class="badge author-badge">👤 klevo</span>
+                    <span class="badge score-badge">▲ 68</span>
+                    <span class="badge comments-badge">💬 9 comments</span>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="news-number">14</div>
+                <div class="news-title">
+                    <a href="https://gist.github.com/hackermondev/5e2cdc32849405fff6b46957747a2d28" target="_blank">
+                        We pwned X, Vercel, Cursor, and Discord through a supply-chain attack
+                    </a>
+                </div>
+                <div class="news-meta">
+                    <span class="badge author-badge">👤 hackermondev</span>
+                    <span class="badge score-badge">▲ 1059</span>
+                    <span class="badge comments-badge">💬 387 comments</span>
+                </div>
+            </div>
+            
+            <div class="news-card">
+                <div class="news-number">15</div>
+                <div class="news-title">
+                    <a href="https://www.jeffgeerling.com/blog/2025/15-tb-vram-on-mac-studio-rdma-over-thunderbolt-5" target="_blank">
+                        1.5 TB of VRAM on Mac Studio – RDMA over Thunderbolt 5
+                    </a>
+                </div>
+                <div class="news-meta">
+                    <span class="badge author-badge">👤 rbanffy</span>
+                    <span class="badge score-badge">▲ 552</span>
+                    <span class="badge comments-badge">💬 202 comments</span>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="https://news.ycombinator.com/" class="source-link" target="_blank">
+                <span>🌐</span>
+                Visit Original Hacker News
+            </a>
+        </div>
+        
+        <div class="footer">
+            <p>Last updated: 2025-12-19 22:20:58 • Generated by Hacker News Parser</p>
+            <p style="margin-top: 10px; opacity: 0.6;">Dark theme with neon gradients • Cards layout</p>
+        </div>
+    </div>
+</body>
+</html>
